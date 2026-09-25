@@ -205,11 +205,96 @@ ___WEB_PERMISSIONS___
 
 ___TESTS___
 
-scenarios: []
+scenarios:
+- name: data-* attribute found directly on element
+  code: |-
+    mock('copyFromDataLayer', function(key) {
+      if (key === 'gtm.element.tagName') return 'BUTTON';
+      if (key === 'gtm.element.dataset.trackingAction') return 'navigation';
+      return undefined;
+    });
+    var result1 = runCode({ searchMode: 'attribute', attributeName: 'data-tracking-action', differentReturnAttr: false, replaceUnderscores: true });
+    assertThat(result1).isEqualTo('navigation');
+- name: data-* attribute with underscores replaced
+  code: |-
+    mock('copyFromDataLayer', function(key) {
+      if (key === 'gtm.element.tagName') return 'BUTTON';
+      if (key === 'gtm.element.dataset.trackingComponent') return 'park_and_train';
+      return undefined;
+    });
+    var result2 = runCode({ searchMode: 'attribute', attributeName: 'data-tracking-component', differentReturnAttr: false, replaceUnderscores: true });
+    assertThat(result2).isEqualTo('park and train');
+- name: underscore replacement disabled
+  code: |-
+    mock('copyFromDataLayer', function(key) {
+      if (key === 'gtm.element.tagName') return 'BUTTON';
+      if (key === 'gtm.element.dataset.trackingComponent') return 'park_and_train';
+      return undefined;
+    });
+    var result3 = runCode({ searchMode: 'attribute', attributeName: 'data-tracking-component', differentReturnAttr: false, replaceUnderscores: false });
+    assertThat(result3).isEqualTo('park_and_train');
+- name: attribute found on parent element
+  code: |-
+    mock('copyFromDataLayer', function(key) {
+      if (key === 'gtm.element.tagName') return 'SPAN';
+      if (key === 'gtm.element.dataset.trackingAction') return undefined;
+      if (key === 'gtm.element.parentElement.tagName') return 'BUTTON';
+      if (key === 'gtm.element.parentElement.dataset.trackingAction') return 'navigation';
+      return undefined;
+    });
+    var result4 = runCode({ searchMode: 'attribute', attributeName: 'data-tracking-action', differentReturnAttr: false, replaceUnderscores: true });
+    assertThat(result4).isEqualTo('navigation');
+- name: attribute not found — returns undefined
+  code: |-
+    mock('copyFromDataLayer', function(key) {
+      if (key === 'gtm.element.tagName') return 'SPAN';
+      if (key === 'gtm.element.parentElement.tagName') return undefined;
+      return undefined;
+    });
+    var result5 = runCode({ searchMode: 'attribute', attributeName: 'data-tracking-action', differentReturnAttr: false, replaceUnderscores: true });
+    assertThat(result5).isUndefined();
+- name: search one attribute, return a different one
+  code: |-
+    mock('copyFromDataLayer', function(key) {
+      if (key === 'gtm.element.tagName') return 'A';
+      if (key === 'gtm.element.dataset.trackingAction') return 'navigation';
+      if (key === 'gtm.element.attributes.href.value') return 'https://example.com';
+      return undefined;
+    });
+    var result6 = runCode({ searchMode: 'attribute', attributeName: 'data-tracking-action', differentReturnAttr: true, returnAttributeName: 'href', replaceUnderscores: false });
+    assertThat(result6).isEqualTo('https://example.com');
+- name: search by tag name — innerText returned
+  code: |-
+    mock('copyFromDataLayer', function(key) {
+      if (key === 'gtm.element.tagName') return 'SPAN';
+      if (key === 'gtm.element.parentElement.tagName') return 'BUTTON';
+      if (key === 'gtm.element.parentElement.innerText') return 'Belgium';
+      return undefined;
+    });
+    var result7 = runCode({ searchMode: 'tagName', tagName: 'button' });
+    assertThat(result7).isEqualTo('Belgium');
+- name: tag name not found — returns undefined
+  code: |-
+    mock('copyFromDataLayer', function(key) {
+      if (key === 'gtm.element.tagName') return 'SPAN';
+      if (key === 'gtm.element.parentElement.tagName') return undefined;
+      return undefined;
+    });
+    var result8 = runCode({ searchMode: 'tagName', tagName: 'button' });
+    assertThat(result8).isUndefined();
+- name: standard (non-data) attribute
+  code: |-
+    mock('copyFromDataLayer', function(key) {
+      if (key === 'gtm.element.tagName') return 'INPUT';
+      if (key === 'gtm.element.attributes.value.value') return 'all locations';
+      return undefined;
+    });
+    var result9 = runCode({ searchMode: 'attribute', attributeName: 'value', differentReturnAttr: false, replaceUnderscores: false });
+    assertThat(result9).isEqualTo('all locations');
 
 
 ___NOTES___
 
-Created on 25/09/2026, 13:00:55
+Created on 25/09/2026, 13:10:08
 
 
