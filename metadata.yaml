@@ -1,5 +1,5 @@
 homepage: https://github.com/toon-pauwels/gtm-attribute-extractor
 documentation: https://github.com/toon-pauwels/gtm-attribute-extractor/blob/main/readme.md
 versions:
-- sha: 818ef8a119e74e3472f3d4325a58b8ba0ba59d02
+- sha: f43d635c1c90a1a88a32481b28a03afa780338f8
 changeNotes: Initial release.
