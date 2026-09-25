@@ -14,7 +14,7 @@ ___INFO___
   "version": 1,
   "securityGroups": [],
   "displayName": "Click Element Extractor",
-  "description": "Retrieves a value from the clicked element or its closest ancestor, by searching for a matching attribute name or tag name.",
+  "description": "Retrieves a value from the clicked element or its closest ancestor, by searching for a matching attribute name or tag name. ",
   "containerContexts": [
     "WEB"
   ]
